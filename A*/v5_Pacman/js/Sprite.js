@@ -4,6 +4,7 @@ class Sprite {
 		this.frames = options.frames || [];
 		this.x = options.x || 0;
 		this.y = options.y || 0;
+		this.pauseIndex = options.pauseIndex || 0;
 		this.ticksPerFrame = options.ticksPerFrame || 0;
 		
 		this.imageSrc = options.image;
@@ -22,7 +23,7 @@ class Sprite {
 		Sprite.all.push(this);
 	}
 	update() {
-		if (this.pause)
+		if (this.pause && this.frameIndex == this.pauseIndex)
 			return;
 		this.tickCount++;
 		if (this.tickCount > this.ticksPerFrame) {

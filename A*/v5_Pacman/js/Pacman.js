@@ -139,7 +139,8 @@ class Pacman {
                 x: this.x,
                 y: this.y,
                 ticksPerFrame: 3,
-                frames: this.spriteFrames[this.direction]
+                frames: this.spriteFrames[this.direction],
+                pauseIndex: 1
             });
         }
         this.drawPath();
