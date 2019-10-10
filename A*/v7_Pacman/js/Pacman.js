@@ -11,7 +11,6 @@ class Pacman {
         this.dieSound = new Audio("./assets/pac_death.wav");
         this.eatSound = new Audio("./assets/chomp.wav");
         this.eatSound.loop = true;
-        this.eatSound.volume = 0.05;
         this.chewCountDown = 10;
     }
     draw() {

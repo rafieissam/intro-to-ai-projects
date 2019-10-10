@@ -36,7 +36,6 @@ let c = 0;
         }
         pac.eatSound.pause();
         let audio = new Audio("./assets/beginning.wav");
-        audio.volume = 0.3;
         setTimeout(() => {
             pac.eatSound.pause();
             audio.play();
