@@ -16,7 +16,7 @@ Canvas.onkeydown(event => {
 const dontPlayIntro = false;
 
 let c = 0;
-(function gameLoop() {
+function gameLoop() {
     if (pac.won || pac.dead)
         return;
     Canvas.update();
@@ -49,4 +49,16 @@ let c = 0;
             }
         }
     }
-})();
+}
+
+Canvas.ctx.fillStyle = "#000";
+Canvas.ctx.font = "30px Arial";
+Canvas.ctx.fillText("Click To Begin", (Canvas.width - 185) / 2, Canvas.height / 2);
+
+let started = false;
+Canvas.canvas.onclick = () => {
+    if (!started) {
+        started = true;
+        gameLoop();
+    }
+}
