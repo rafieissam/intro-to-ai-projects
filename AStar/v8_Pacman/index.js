@@ -7,7 +7,7 @@ let ghosts = [];
 ghosts.push(new Ghost(12 * Node.size, 14 * Node.size, pac, "red"));
 ghosts.push(new Ghost(13 * Node.size, 14 * Node.size, pac, "pink"));
 ghosts.push(new Ghost(14 * Node.size, 14 * Node.size, pac, "blue"));
-ghosts.push(new Ghost(15 * Node.size, 14 * Node.size, pac, "yellow"));
+ghosts.push(new Ghost(15 * Node.size, 14 * Node.size, pac, "orange"));
 
 Canvas.onkeydown(event => {
     pac.onkeydown(event);

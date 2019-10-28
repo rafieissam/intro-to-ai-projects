@@ -33,7 +33,7 @@ class Ghost {
                 let s = 5;
                 let nx = n.x * Node.size - (s - Node.size) / 2;
                 let ny = n.y * Node.size - (s - Node.size) / 2;
-                Canvas.ctx.fillStyle = "red";
+                Canvas.ctx.fillStyle = this.color;
                 Canvas.ctx.fillRect(nx, ny, s, s);
             }
         }
@@ -267,7 +267,7 @@ class Ghost {
                         }
                     ]
                 },
-                yellow: {
+                orange: {
                     37: [
                         {
                             x: 2 * 680 / 3 + 34,
@@ -352,7 +352,7 @@ class Ghost {
                 pauseIndex: 1
             });
         }
-        // this.drawPath();
+        this.drawPath();
         this.sprite.update();
         this.sprite.draw();
     }
