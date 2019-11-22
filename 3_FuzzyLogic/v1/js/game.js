@@ -1033,9 +1033,9 @@ class Ghost {
         let goal = Ghost.dests[Math.floor(Math.random() * (Ghost.dests.length - 1))];
         this.goTo(goal);
     }
-    setBehaviour(bhvr) {
+    setBehavior(bhvr) {
         ghostBhvrs[this.color] = bhvr;
-        this.behaviour = bhvr;
+        this.behavior = bhvr;
         updateBhvrs();
     }
     chooseDestination() {
@@ -1053,38 +1053,57 @@ class Ghost {
                 y: ghost.y
             };
         }
-        chooseBehaviour(this, pacmanCoords, ghostsCoords);
-        switch (this.behaviour) {
+        this.setBehavior(chooseBehavior(this, pacmanCoords, ghostsCoords));
+        switch (this.behavior) {
             case "Hunting":
-                this.goToPacman();
+                this.behaveHunting();
                 break;
             case "Defense":
-                this.goToRandom();
+                this.behaveDefense();
                 break;
             case "Shy":
-                this.goToRandom();
+                this.behaveShy();
                 break;
             default:
-                this.goToRandom();
+                this.behaveRandom();
         }
+    }
+    behaveHunting() {
+        if (customHunting)
+            behaveHunting(this, pacman);
+        else
+            this.goToPacman();
+    }
+    behaveDefense() {
+        if (customDefense)
+            behaveDefense(this, Pellet.list, Node.size);
+        else
+            this.goToRandom();
+    }
+    behaveShy() {
+        if (customShy)
+            behaveShy(this, ghosts);
+        else
+            this.goToRandom();
+    }
+    behaveRandom() {
+        if (customRandom)
+            behaveRandom(this, Ghost.dests);
+        else
+            this.goToRandom();
     }
     update() {
         if (this.nextDirection != null)
             this.changeDirection(this.nextDirection);
         if (this.path.length) {
             this.followPath();
-        } else {
-            let aligned = this.x % Node.size == 0;
-            aligned = aligned && this.y % Node.size == 0;
-            if (this.inSpawn) {
-                this.spawnMove();
-            } else if (aligned && (!this.cantChange || !this.path.length)) {
-                this.cantChange = true;
-                setTimeout(() => {
-                    this.cantChange = false;
-                }, 3000);
-                this.chooseDestination();
-            }
+        }
+        let aligned = this.x % Node.size == 0;
+        aligned = aligned && this.y % Node.size == 0;
+        if (this.inSpawn) {
+            this.spawnMove();
+        } else if (aligned) {
+            this.chooseDestination();
         }
         this.move();
         this.kill();
@@ -1237,28 +1256,37 @@ Canvas.init("canvas", Node.size * PacmanMazeWidth, Node.size * PacmanMazeHeight)
 Obstacle.init();
 Pellet.init();
 
-let pac = new Pacman(13 * Node.size, 17 * Node.size);
+let pacman = new Pacman(13 * Node.size, 17 * Node.size);
 let ghosts = [];
-ghosts.push(new Ghost(12 * Node.size, 14 * Node.size, pac, "red"));
-ghosts.push(new Ghost(13 * Node.size, 14 * Node.size, pac, "pink"));
-ghosts.push(new Ghost(14 * Node.size, 14 * Node.size, pac, "blue"));
-ghosts.push(new Ghost(15 * Node.size, 14 * Node.size, pac, "orange"));
+ghosts.push(new Ghost(12 * Node.size, 14 * Node.size, pacman, "red"));
+ghosts.push(new Ghost(13 * Node.size, 14 * Node.size, pacman, "pink"));
+ghosts.push(new Ghost(14 * Node.size, 14 * Node.size, pacman, "blue"));
+ghosts.push(new Ghost(15 * Node.size, 14 * Node.size, pacman, "orange"));
 
 Canvas.onkeydown(event => {
-    pac.onkeydown(event);
+    pacman.onkeydown(event);
 });
 
 const dontPlayIntro = skipIntro || false;
 
+function audioDoneAction(gameLoop) {
+    window.requestAnimationFrame(gameLoop);
+    for (let i = 0; i < ghosts.length; i++) {
+        setTimeout(() => {
+            ghosts[i].spawn();
+        }, i * 5000);
+    }
+}
+
 let c = 0;
 function gameLoop() {
-    if (pac.won || pac.dead)
+    if (pacman.won || pacman.dead)
         return;
     Canvas.update();
     Pellet.drawAll();
     for (let i = 0; i < ghosts.length; i++)
         ghosts[i].update();
-    pac.update();
+    pacman.update();
     if (c < 2 || c == 3) {
         if (c < 2)
             c++;
@@ -1266,27 +1294,17 @@ function gameLoop() {
     } else if (c == 2) {
         c++;
         if (dontPlayIntro) {
-            window.requestAnimationFrame(gameLoop);
-            for (let i = 0; i < ghosts.length; i++) {
-                setTimeout(() => {
-                    ghosts[i].spawn();
-                }, i * 5000);
-            }
+            audioDoneAction(gameLoop);
             return;
         }
-        pac.eatSound.pause();
+        pacman.eatSound.pause();
         let audio = new Audio("./assets/beginning.wav");
         setTimeout(() => {
-            pac.eatSound.pause();
+            pacman.eatSound.pause();
             audio.play();
         }, 100);
         audio.onended = () => {
-            window.requestAnimationFrame(gameLoop);
-            for (let i = 0; i < ghosts.length; i++) {
-                setTimeout(() => {
-                    ghosts[i].spawn();
-                }, i * 5000);
-            }
+            audioDoneAction(gameLoop);
         }
     }
 }
