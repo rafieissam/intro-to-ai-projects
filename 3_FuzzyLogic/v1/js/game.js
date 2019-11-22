@@ -1030,6 +1030,8 @@ class Ghost {
                     Ghost.dests.push(new Node(j, i));
     }
     goToRandom() {
+        if (this.behavior != "Hunting" && this.path.length)
+            return;
         let goal = Ghost.dests[Math.floor(Math.random() * (Ghost.dests.length - 1))];
         this.goTo(goal);
     }
@@ -1076,13 +1078,20 @@ class Ghost {
     }
     behaveDefense() {
         if (customDefense)
-            behaveDefense(this, Pellet.list, Node.size);
+            behaveDefense(this, { x: 28, y: 31 }, Node.size, Pellet.list);
         else
             this.goToRandom();
     }
     behaveShy() {
+        let restGhosts = [];
+        for (let i in ghosts) {
+            let ghost = ghosts[i]
+            if (ghost.color == this.color)
+                continue;
+            restGhosts.push(ghost);
+        }
         if (customShy)
-            behaveShy(this, ghosts);
+            behaveShy(this, restGhosts, Ghost.dests, Node.size);
         else
             this.goToRandom();
     }
@@ -1248,6 +1257,9 @@ class Ghost {
         let start = new Node(x, y);
         let path = Node.findPath(start, goal, this.obstacles);
         this.followPath(path);
+    }
+    goToCoords(x, y) {
+        this.goTo(new Node(x, y));
     }
 }
 Ghost.dests = [];
