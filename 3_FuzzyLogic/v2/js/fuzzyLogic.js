@@ -49,7 +49,7 @@ function behaveHunting(myGhost, pacman) {
  * @param {*} myGhost The ghost that called this function
  * @param {*} mapSize Size of map in number of nodes
  * @param {*} pellets Array of all remaining pellets on the map
- * @param {*} nodeSize Size of a node to find pellet coordinates
+ * @param {*} nodeSize Size of a node to find actual coordinates
  * Example:
  * pellets[0].x => node x
  * (pellets[0].x + 0.5) * nodeSize => actual x
@@ -63,7 +63,7 @@ function behaveDefense(myGhost, mapSize, nodeSize, pellets) {
  * @param {*} myGhost The ghost that called this function
  * @param {*} restGhosts All ghosts excluding the ghost that called this function
  * @param {*} nodes Array of all nodes excluding walls
- * @param {*} nodeSize Size of a node to find pellet coordinates
+ * @param {*} nodeSize Size of a node to find actual coordinates
  */
 function behaveShy(myGhost, restGhosts, nodes, nodeSize) {
     // CODE HERE
